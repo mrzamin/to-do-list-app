@@ -1,4 +1,5 @@
 let lists = [];
+console.log[lists];
 
 const List = (name, icon) => {
   let tasks = [];
@@ -14,6 +15,7 @@ const List = (name, icon) => {
 const createList = (chosenName, chosenIcon) => {
   const newList = List(chosenName, chosenIcon);
   lists.push(newList);
+  return newList;
 };
 
 const editList = (listName, newListName, newIcon) => {

@@ -1,39 +1,65 @@
-import * as list from "./list.js";
+import * as listModule from "./list.js";
 
-const Task = (name, description, date, priority, list) => {
+const Task = (name, description, date, priority) => {
   return {
     name,
     description,
     date,
     priority,
-    list,
-
-    // set setName(newName) {
-    //   this.name = newName;
-    // },
-
-    // set setDescription(newDescription) {
-    //   this.description = newDescription;
-    // },
-
-    // set setDate(newDate) {
-    //   this.date = newDate;
-    // },
-
-    // set setPriority(newPriority) {
-    //   this.priority = newPriority;
-    // },
-
-    // set setList(newList) {
-    //   this.name = newList;
-    // },
   };
 };
 
-const createTask = (chosenList, taskName, description, date, priority) => {
-  const chosenList = getList(chosenList);
+const createTask = (list, taskName, description, date, priority) => {
+  const chosenList = listModule.getList(list);
   const newTask = Task(taskName, description, date, priority);
   chosenList.tasks.push(newTask);
+  return newTask;
 };
 
-let task1 = Task("Pick up Quentin", "dkdjd", "iddbdbd", "prppr", "Car");
+const editTask = (
+  list,
+  taskName,
+  newName,
+  newDescription,
+  newDate,
+  newPriority
+) => {
+  const chosenList = listModule.getList(list);
+  console.log(`Hello there ${chosenList.name}`);
+
+  const chosenTask = getTask(`${chosenList.name}`, taskName);
+  console.log(`Hello there ${chosenTask.name}`);
+  chosenTask.name = newName;
+  chosenTask.description = newDescription;
+  chosenTask.date = newDate;
+  chosenTask.priority = newPriority;
+
+  return chosenTask;
+};
+
+const getTask = (list, taskName) => {
+  const selectedList = listModule.getList(list);
+  //May need to create a new identifier for task.
+  //Loop through the specified list obj, find the "tasks" key, find the task in the array.
+  for (const key in selectedList) {
+    if (key === "tasks") {
+      const task = selectedList[key].find((task) => task.name === taskName);
+      if (task) return task;
+    }
+  }
+};
+
+const getTaskIndex = (list, taskName) => {
+  const selectedList = listModule.getList(list);
+  //   console.log(selectedList);
+  for (let key in selectedList) {
+    if (key === "tasks") {
+      const taskIndex = selectedList[key].findIndex(
+        (task) => task.name === taskName
+      );
+      return taskIndex;
+    }
+  }
+};
+
+export { createTask, editTask, getTask, getTaskIndex };
