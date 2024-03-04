@@ -21,14 +21,7 @@ let task2 = taskModule.createTask(
   "high"
 );
 
-let editedTask = taskModule.editTask(
-  "Groceries",
-  "get apples",
-  "get hemp",
-  "get oranges from fresh thyme",
-  "2/6",
-  "high"
-);
+let completedTask = taskModule.markComplete("Groceries", "Text Quentin");
+let completedTask1 = taskModule.markComplete("Groceries", "get apples");
 
-let getTask = taskModule.getTask("Groceries", "Text Quentin");
-console.log(getTask);
+console.log(groceryList);

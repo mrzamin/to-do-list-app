@@ -34,7 +34,23 @@ const editTask = (
   chosenTask.date = newDate;
   chosenTask.priority = newPriority;
 
-  return chosenTask;
+  let updatedTask = chosenTask;
+  return updatedTask;
+};
+
+const deleteTask = (list, taskName) => {
+  const selectedList = listModule.getList(list);
+  const chosenTaskIndex = getTaskIndex(list, taskName);
+  selectedList.tasks.splice(chosenTaskIndex, 1);
+};
+
+const markComplete = (list, taskName) => {
+  const selectedList = listModule.getList(list);
+  const chosenTask = getTask(list, taskName);
+  const chosenTaskIndex = getTaskIndex(list, taskName);
+  selectedList.completed.push(chosenTask);
+  console.log(selectedList.completed);
+  selectedList.tasks.splice(chosenTaskIndex, 1);
 };
 
 const getTask = (list, taskName) => {
@@ -62,4 +78,11 @@ const getTaskIndex = (list, taskName) => {
   }
 };
 
-export { createTask, editTask, getTask, getTaskIndex };
+export {
+  createTask,
+  editTask,
+  deleteTask,
+  markComplete,
+  getTask,
+  getTaskIndex,
+};
