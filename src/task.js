@@ -48,8 +48,8 @@ const markComplete = (list, taskName) => {
   const selectedList = listModule.getList(list);
   const chosenTask = getTask(list, taskName);
   const chosenTaskIndex = getTaskIndex(list, taskName);
-  selectedList.completed.push(chosenTask);
-  console.log(selectedList.completed);
+  selectedList.completed.unshift(chosenTask);
+  // console.log(selectedList.completed);
   selectedList.tasks.splice(chosenTaskIndex, 1);
 };
 
