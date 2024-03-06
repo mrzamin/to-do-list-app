@@ -1,13 +1,15 @@
-import * as listModule from "./list.js";
-import * as taskModule from "./task.js";
-
-taskModule.updateLists();
+import "./styles.css";
+import * as listModule from "./list";
+import * as taskModule from "./task";
+import screenController from "./screenController";
 
 // window.alert(window.location);
 
-// let groceryList = listModule.createList("Groceries", "shopping cart");
+let groceryList = listModule.createList("Groceries", "shopping cart");
 
-// // let familyList = listModule.createList("Family", "family");
+let familyList = listModule.createList("Family", "family");
+listModule.updateLists();
+screenController();
 
 // let task1 = taskModule.createTask(
 //   "Groceries",
