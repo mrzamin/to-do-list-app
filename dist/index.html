@@ -22,8 +22,49 @@
         </div>
       </div>
       <main class="main">
-        <div class="main-content"></div>
+        <div class="main-content">
+          <button class="add-task-btn">Add task</button>
+        </div>
       </main>
     </div>
+
+    <div class="modal" id="modal">
+      <form id="form" action="#">
+        <div>
+          <input
+            type="text"
+            class="task-title"
+            name="title"
+            placeholder="Task Title"
+            required
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            maxlength="250"
+            class="task-description"
+            name="Description"
+            placeholder="Task Description"
+          />
+        </div>
+        <div>
+          <input type="date" min="2024/03/01" max="2024/01/2050" name="date" />
+          <select name="priority" id="priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+          <select name="list-options" id="list-options">
+            List
+          </select>
+        </div>
+        <div>
+          <button class="cancel">Cancel</button>
+          <button class="submit" type="submit">Add task</button>
+        </div>
+      </form>
+    </div>
+    <div id="overlay"></div>
   </body>
 </html>

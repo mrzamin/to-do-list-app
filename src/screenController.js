@@ -1,5 +1,6 @@
 import * as listModule from "./list";
 import { saveToLocalStorage, getFromLocalStorage } from "./localStorage";
+
 import addBtn from "./addBtn.svg";
 import editBtn from "./editBtn.svg";
 import deleteBtn from "./deleteBtn.svg";
@@ -18,9 +19,36 @@ function screenController() {
   const input = document.querySelector(".list-input");
   input.style.visibility = "hidden";
   const listContainerUL = document.querySelector(".list-container-ul");
+  const addTaskBtn = document.querySelector(".add-task-btn");
+  const cancelBtn = document.querySelector(".cancel");
+  const overlay = document.querySelector("#overlay");
   let selectedListId;
   let selectedList;
 
+  addTaskBtn.addEventListener("click", () => {
+    const modal = document.querySelector("#modal");
+    openModal(modal);
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    const modal = document.querySelector(".modal.active");
+    closeModal(modal);
+  });
+
+  function openModal(modal) {
+    modal.classList.add("active");
+    overlay.classList.add("active");
+  }
+
+  function closeModal(modal) {
+    modal.classList.remove("active");
+    overlay.classList.remove("active");
+  }
+
+  overlay.addEventListener("click", () => {
+    const modal = document.querySelector(".modal.active");
+    closeModal(modal);
+  });
   // const updateLists = () => {
   //   if (!getFromLocalStorage) {
   //     console.log("No lists in storage");
@@ -28,29 +56,54 @@ function screenController() {
   //     // saveToLocalStorage(lists);
   //   }
 
+  //Render tasks onto the page.
+  const renderTasks = (listId) => {};
+
   //Render the lists onto the page.
   const renderLists = () => {
     clearLists();
     currentLists.forEach((list) => {
       const listElement = document.createElement("li");
       listElement.classList.add("list");
-      listElement.dataset.listId = list.id;
+
       // listElement.innerText = list.name;
       listContainerUL.appendChild(listElement);
 
-      const listName = document.createElement("p");
+      const form = document.createElement("form");
+      form.classList.add("edit-form");
+
+      const listName = document.createElement("input");
+      listName.value = list.name;
+      listName.setAttribute("readonly", true);
       listName.classList.add("list-name");
-      listName.innerHTML = list.name;
+      listName.dataset.listId = list.id;
 
-      const editBtn = document.createElement("img");
-      editBtn.src = editBtn;
+      form.appendChild(listName);
 
-      const deleteBtn = document.createElement("img");
-      deleteBtn.src = deleteBtn;
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (listName.value == null || listName.value === "") {
+          listName.value = list.name;
+        } else {
+          listModule.editList(list.name, listName.value, "defaultJPG");
+          renderLists();
+          toggleReadOnly(listName);
+        }
+      });
 
-      listElement.appendChild(listName);
-      listElement.appendChild(editBtn);
-      listElement.appendChild(deleteBtn);
+      const editIcon = document.createElement("img");
+      editIcon.src = editBtn;
+      editIcon.dataset.icon = "edit";
+      editIcon.dataset.listId = list.id;
+
+      const deleteIcon = document.createElement("img");
+      deleteIcon.src = deleteBtn;
+      deleteIcon.dataset.icon = "delete";
+      deleteIcon.dataset.listId = list.id;
+
+      listElement.appendChild(form);
+      listElement.appendChild(editIcon);
+      listElement.appendChild(deleteIcon);
     });
   };
 
@@ -60,7 +113,6 @@ function screenController() {
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    console.log("submitted");
     const listName = input.value;
     if (listName == null || listName === "") return;
     listModule.createList(listName, "defaultImg");
@@ -70,19 +122,32 @@ function screenController() {
   });
 
   listContainerUL.addEventListener("click", (e) => {
-    if (e.target.tagName.toLowerCase() === "li") {
-      console.log("li clicked");
+    if (e.target.tagName.toLowerCase() === "input") {
+      selectedListId = e.target.dataset.listId;
+      selectedList = e.target;
+
       if (selectedList == null) {
         console.log("equals null");
-        selectedListId = e.target.dataset.listId;
-        selectedList = e.target;
+
         highlightList(selectedList);
+        renderTasks(selectedListId);
       } else {
         unhighlightList(selectedList);
-        selectedListId = e.target.dataset.listId;
-        selectedList = e.target;
         highlightList(selectedList);
+        renderTasks(selectedListId);
       }
+    }
+
+    if (e.target.dataset.icon == "edit") {
+      const listName = e.target.previousElementSibling;
+      const input = listName.firstElementChild;
+      toggleReadOnly(input);
+    }
+
+    if (e.target.dataset.icon == "delete") {
+      const selectedListId = e.target.dataset.listId;
+      listModule.deleteList(selectedListId);
+      renderLists();
     }
   });
 
@@ -95,6 +160,14 @@ function screenController() {
       input.style.visibility = "visible";
     } else {
       input.style.visibility = "hidden";
+    }
+  }
+
+  function toggleReadOnly(input) {
+    if (input.hasAttribute("readonly")) {
+      input.removeAttribute("readonly");
+    } else {
+      input.setAttribute("readonly", "readonly");
     }
   }
 

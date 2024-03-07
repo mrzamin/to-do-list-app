@@ -44,15 +44,14 @@ const editList = (listName, newListName, newIcon) => {
   saveToLocalStorage(lists);
 };
 
-const deleteList = (listName) => {
-  const selectedListIndex = getListIndex(listName);
+const deleteList = (listId) => {
+  const selectedListIndex = getListIndex(listId);
   lists.splice(selectedListIndex, 1);
   saveToLocalStorage(lists);
 };
 
 const getList = (listName) => lists.find((list) => list.name === listName);
 
-const getListIndex = (listName) =>
-  lists.findIndex((list) => list.name === listName);
+const getListIndex = (listId) => lists.findIndex((list) => list.id === listId);
 
 export { lists, createList, editList, deleteList, getList, getListIndex };
