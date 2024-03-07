@@ -1,6 +1,10 @@
 import * as listModule from "./list";
+import { saveToLocalStorage, getFromLocalStorage } from "./localStorage";
+import addBtn from "./addBtn.svg";
+import editBtn from "./editBtn.svg";
+import deleteBtn from "./deleteBtn.svg";
 
-const screenController = () => {
+function screenController() {
   const currentLists = listModule.lists;
   console.log(currentLists);
   const wrapper = document.querySelector(".wrapper");
@@ -8,17 +12,45 @@ const screenController = () => {
   const main = document.querySelector(".main");
   const sidebarHeader = document.querySelector(".sidebar-header");
   const listContainer = document.querySelector(".list-container");
+  const listContainerIcon = document.querySelector(".list-container-icon");
+  listContainerIcon.src = addBtn;
   const form = document.querySelector(".list-form");
   const input = document.querySelector(".list-input");
+  input.style.visibility = "hidden";
   const listContainerUL = document.querySelector(".list-container-ul");
+  let selectedListId;
+  let selectedList;
 
-  const updateLists = () => {
+  // const updateLists = () => {
+  //   if (!getFromLocalStorage) {
+  //     console.log("No lists in storage");
+  //     createList("My List", "defaultImg");
+  //     // saveToLocalStorage(lists);
+  //   }
+
+  //Render the lists onto the page.
+  const renderLists = () => {
     clearLists();
     currentLists.forEach((list) => {
       const listElement = document.createElement("li");
       listElement.classList.add("list");
-      listElement.innerText = `${list.name}`;
+      listElement.dataset.listId = list.id;
+      // listElement.innerText = list.name;
       listContainerUL.appendChild(listElement);
+
+      const listName = document.createElement("p");
+      listName.classList.add("list-name");
+      listName.innerHTML = list.name;
+
+      const editBtn = document.createElement("img");
+      editBtn.src = editBtn;
+
+      const deleteBtn = document.createElement("img");
+      deleteBtn.src = deleteBtn;
+
+      listElement.appendChild(listName);
+      listElement.appendChild(editBtn);
+      listElement.appendChild(deleteBtn);
     });
   };
 
@@ -32,12 +64,51 @@ const screenController = () => {
     const listName = input.value;
     if (listName == null || listName === "") return;
     listModule.createList(listName, "defaultImg");
-    updateLists();
+    input.value = "";
+    renderLists();
+    toggleInput();
   });
 
+  listContainerUL.addEventListener("click", (e) => {
+    if (e.target.tagName.toLowerCase() === "li") {
+      console.log("li clicked");
+      if (selectedList == null) {
+        console.log("equals null");
+        selectedListId = e.target.dataset.listId;
+        selectedList = e.target;
+        highlightList(selectedList);
+      } else {
+        unhighlightList(selectedList);
+        selectedListId = e.target.dataset.listId;
+        selectedList = e.target;
+        highlightList(selectedList);
+      }
+    }
+  });
+
+  listContainerIcon.addEventListener("click", (e) => {
+    toggleInput();
+  });
+
+  function toggleInput() {
+    if (input.style.visibility == "hidden") {
+      input.style.visibility = "visible";
+    } else {
+      input.style.visibility = "hidden";
+    }
+  }
+
+  function highlightList(list) {
+    list.classList.add("selected-list");
+  }
+
+  function unhighlightList(list) {
+    list.classList.remove("selected-list");
+  }
+
   //Initial render:
-  updateLists();
-};
+  renderLists();
+}
 
 export default screenController;
 // const listVariable = listModule.lists;

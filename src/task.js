@@ -14,7 +14,7 @@ const createTask = (list, taskName, description, date, priority) => {
   const chosenList = listModule.getList(list);
   const newTask = Task(taskName, description, date, priority);
   chosenList.tasks.push(newTask);
-  saveToLocalStorage();
+  // saveToLocalStorage();
   return newTask;
 };
 
@@ -37,7 +37,7 @@ const editTask = (
   chosenTask.priority = newPriority;
 
   let updatedTask = chosenTask;
-  saveToLocalStorage();
+  // saveToLocalStorage();
   return updatedTask;
 };
 
@@ -45,7 +45,7 @@ const deleteTask = (list, taskName) => {
   const selectedList = listModule.getList(list);
   const chosenTaskIndex = getTaskIndex(list, taskName);
   selectedList.tasks.splice(chosenTaskIndex, 1);
-  saveToLocalStorage();
+  // saveToLocalStorage();
 };
 
 const markComplete = (list, taskName) => {
@@ -55,7 +55,7 @@ const markComplete = (list, taskName) => {
   selectedList.completed.unshift(chosenTask);
   // console.log(selectedList.completed);
   selectedList.tasks.splice(chosenTaskIndex, 1);
-  saveToLocalStorage();
+  // saveToLocalStorage();
 };
 
 const getTask = (list, taskName) => {

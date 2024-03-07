@@ -1,10 +1,12 @@
 const localStorageKey = "lists";
 
-function saveToLocalStorage(data) {
-  return localStorage.setItem(localStorageKey, JSON.stringify(data));
+function saveToLocalStorage(lists) {
+  console.log("saved");
+  localStorage.setItem(localStorageKey, JSON.stringify(lists));
 }
 
 function getFromLocalStorage() {
+  console.log("fetched");
   const data = JSON.parse(localStorage.getItem(localStorageKey));
   return data;
 }

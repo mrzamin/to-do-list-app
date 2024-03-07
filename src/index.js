@@ -4,11 +4,11 @@ import * as taskModule from "./task";
 import screenController from "./screenController";
 
 // window.alert(window.location);
+// listModule.updateLists();
+// let groceryList = listModule.createList("Groceries", "shopping cart");
 
-let groceryList = listModule.createList("Groceries", "shopping cart");
-
-let familyList = listModule.createList("Family", "family");
-listModule.updateLists();
+// let familyList = listModule.createList("Family", "family");
+// listModule.updateLists();
 screenController();
 
 // let task1 = taskModule.createTask(

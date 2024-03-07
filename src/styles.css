@@ -29,6 +29,11 @@
   width: 80%;
 }
 
+.list {
+  display: flex;
+  justify-content: space-around;
+  width: 70%;
+}
 .list-container {
   border: 1px solid black;
 }
@@ -49,4 +54,9 @@
 
 .sidebar-ul {
   border: 1px solid pink;
+}
+
+.selected-list {
+  font-weight: bold;
+  color: red;
 }

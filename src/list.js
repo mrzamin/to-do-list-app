@@ -1,24 +1,28 @@
 import { getFromLocalStorage, saveToLocalStorage } from "./localStorage";
+import screenController from "./screenController";
 
-let lists = [];
+let lists = getFromLocalStorage() || [];
 
-const updateLists = () => {
-  if (!getFromLocalStorage) {
-    createList("My List", "defaultImg");
-    saveToLocalStorage(lists);
-  }
+// const updateLists = () => {
+//   if (!getFromLocalStorage) {
+//     console.log("No lists in storage");
+//     createList("My List", "defaultImg");
+//     // saveToLocalStorage(lists);
+//   }
 
-  // lists = JSON.parse(localStorage.getItem(localStorageKey));
-};
+// lists = JSON.parse(localStorage.getItem(localStorageKey));
+// };
 
 // const storeLists = () => {
 //   localStorage.setItem(localStorageKey, JSON.stringify(lists));
 // };
 
 const List = (name, icon) => {
+  let id = Date.now().toString();
   let tasks = [];
   let completed = [];
   return {
+    id,
     name,
     icon,
     tasks,
@@ -51,12 +55,4 @@ const getList = (listName) => lists.find((list) => list.name === listName);
 const getListIndex = (listName) =>
   lists.findIndex((list) => list.name === listName);
 
-export {
-  lists,
-  updateLists,
-  createList,
-  editList,
-  deleteList,
-  getList,
-  getListIndex,
-};
+export { lists, createList, editList, deleteList, getList, getListIndex };
