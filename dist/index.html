@@ -9,27 +9,25 @@
   <body>
     <div class="wrapper">
       <div class="sidebar">
-        <div class="sidebar-header">To-Do App</div>
-        <div class="list-container">
-          <div class="list-container-heading">
-            <div class="list-container-title">My Lists</div>
-            <img src="" class="list-container-icon" alt="Add button" />
+        <div class="sidebar-title">To-Do App</div>
+        <div class="list-collection-container">
+          <div class="list-collection-heading">
+            <div class="list-collection-title">My Lists</div>
+            <img src="" class="list-collection-add-btn" alt="Add button" />
           </div>
-          <ul class="list-container-ul"></ul>
+          <ul class="list-container"></ul>
           <form class="list-form" action="#">
             <input class="list-input" type="text" />
           </form>
         </div>
       </div>
       <main class="main">
-        <div class="main-content">
-          <button class="add-task-btn">Add task</button>
-        </div>
+        <div class="main-content"></div>
       </main>
     </div>
 
-    <div class="modal" id="modal">
-      <form id="form" action="#">
+    <div class="modal" id="task-modal">
+      <form id="form" class="task-form" action="#">
         <div>
           <input
             type="text"
@@ -60,8 +58,21 @@
           </select>
         </div>
         <div>
-          <button class="cancel">Cancel</button>
+          <button class="task-cancel">Cancel</button>
           <button class="submit" type="submit">Add task</button>
+        </div>
+      </form>
+    </div>
+    <div class="modal" id="list-modal">
+      <form action="#" id="list-form">
+        <div class="list-title">List Title</div>
+        <div class="list-body">
+          <label>List Name</label>
+          <input type="text" class="list-name-input" />
+          <div class="buttons">
+            <button type="submit">Submit</button>
+            <button class="list-cancel">Cancel</button>
+          </div>
         </div>
       </form>
     </div>

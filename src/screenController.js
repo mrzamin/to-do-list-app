@@ -1,44 +1,159 @@
 import * as listModule from "./list";
-import { saveToLocalStorage, getFromLocalStorage } from "./localStorage";
+import * as taskModule from "./task";
+// import { saveToLocalStorage, getIdFromLocalStorage } from "./localStorage";
 
 import addBtn from "./addBtn.svg";
 import editBtn from "./editBtn.svg";
 import deleteBtn from "./deleteBtn.svg";
 
-function screenController() {
-  const currentLists = listModule.lists;
-  console.log(currentLists);
-  const wrapper = document.querySelector(".wrapper");
-  const sidebar = document.querySelector(".sidebar");
-  const main = document.querySelector(".main");
-  const sidebarHeader = document.querySelector(".sidebar-header");
-  const listContainer = document.querySelector(".list-container");
-  const listContainerIcon = document.querySelector(".list-container-icon");
-  listContainerIcon.src = addBtn;
-  const form = document.querySelector(".list-form");
-  const input = document.querySelector(".list-input");
-  input.style.visibility = "hidden";
-  const listContainerUL = document.querySelector(".list-container-ul");
-  const addTaskBtn = document.querySelector(".add-task-btn");
-  const cancelBtn = document.querySelector(".cancel");
-  const overlay = document.querySelector("#overlay");
-  let selectedListId;
-  let selectedList;
+const localStorageKey = "lists";
+const localStorageIdKey = "listId";
 
-  addTaskBtn.addEventListener("click", () => {
-    const modal = document.querySelector("#modal");
-    openModal(modal);
+function saveToLocalStorage(lists, selectedListId) {
+  localStorage.setItem(localStorageKey, JSON.stringify(lists));
+  localStorage.setItem(localStorageIdKey, JSON.stringify(selectedListId));
+}
+
+function getFromLocalStorage() {
+  const data = localStorage.getItem(localStorageKey)
+    ? JSON.parse(localStorage.getItem(localStorageKey))
+    : null;
+  // return JSON.parse(localStorage.getItem(localStorageKey));
+  return data;
+}
+
+function getIdFromLocalStorage() {
+  const selectedListId = localStorage.getItem(localStorageIdKey);
+  return selectedListId;
+}
+
+let selectedListId = getIdFromLocalStorage();
+
+function screenController() {
+  const lists = listModule.lists;
+  const listContainer = document.querySelector(".list-container");
+  const addListForm = document.querySelector(".list-form");
+  const addListBtn = document.querySelector(".list-collection-add-btn");
+  const listInput = document.querySelector(".list-input");
+  const listForm = document.querySelector("#list-form");
+  const overlay = document.querySelector("#overlay");
+  const cancelBtn = document.querySelector(".list-cancel");
+  const submitBtn = document.querySelector(".list-submit");
+
+  const renderLists = () => {
+    clearLists();
+    lists.forEach((list) => {
+      const listName = document.createElement("input");
+      listName.value = list.name;
+      listName.classList.add("list-name");
+      listName.setAttribute("readonly", true);
+      listName.dataset.listId = list.id;
+      if (list.id === selectedListId) {
+        listName.classList.add("selected-list");
+      }
+
+      const editListForm = document.createElement("form");
+      editListForm.classList.add("edit-list-form");
+      editListForm.appendChild(listName);
+
+      const editListBtn = document.createElement("img");
+      editListBtn.src = editBtn;
+      editListBtn.dataset.btn = "edit";
+      editListBtn.dataset.listId = list.id;
+
+      const deleteListBtn = document.createElement("img");
+      deleteListBtn.src = deleteBtn;
+      deleteListBtn.dataset.btn = "delete";
+      deleteListBtn.dataset.listId = list.id;
+
+      const listElement = document.createElement("li");
+      listElement.classList.add("list-element");
+      listElement.appendChild(editListForm);
+      listElement.appendChild(editListBtn);
+      listElement.appendChild(deleteListBtn);
+
+      listContainer.appendChild(listElement);
+    });
+  };
+
+  //clears list collection from UI.
+  const clearLists = () => {
+    listContainer.innerHTML = "";
+  };
+
+  //Add event listener to add list form.
+  addListForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const listName = listInput.value;
+    if (listName == null || listName === "") return;
+    listModule.createList(listName, "defaultImg");
+    listInput.value = "";
+    renderLists();
+    toggleFormDisplay();
   });
+
+  function toggleFormDisplay() {
+    if (listInput.style.visibility == "hidden") {
+      listInput.style.visibility = "visible";
+    } else {
+      listInput.style.visibility = "hidden";
+    }
+  }
+
+  //Add event listener to add list button.
+
+  addListBtn.addEventListener("click", toggleFormDisplay);
+
+  listContainer.addEventListener("click", selectElement);
+
+  function selectElement(e) {
+    selectedListId = e.target.dataset.listId;
+    saveToLocalStorage(lists, selectedListId);
+    if (e.target.tagName.toLowerCase() === "input") {
+      renderLists();
+    }
+    if (e.target.dataset.btn == "edit") {
+      openListModal(selectedListId);
+    }
+
+    if (e.target.dataset.btn == "delete") {
+      listModule.deleteList(selectedListId);
+      renderLists();
+    }
+  }
 
   cancelBtn.addEventListener("click", () => {
-    const modal = document.querySelector(".modal.active");
-    closeModal(modal);
+    const listModal = document.querySelector(".modal.active");
+    closeModal(listModal);
   });
 
-  function openModal(modal) {
-    modal.classList.add("active");
+  listForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const listModal = document.querySelector(".modal.active");
+    const listName = document.querySelector(".list-name-input");
+    if (listName == null || listName == "") return;
+    listModule.editListName(selectedListId, listName.value, "default");
+    renderLists();
+    closeModal(listModal);
+  });
+
+  function openListModal(selectedListId) {
+    const listModal = document.querySelector("#list-modal");
+    console.log(listModal);
+    const listName = document.querySelector(".list-name-input");
+    const listTitle = document.querySelector(".list-title");
+    const list = listModule.getList(selectedListId);
+    listName.value = list.name;
+    listTitle.innerHTML = list.name;
+    listModal.classList.add("active");
     overlay.classList.add("active");
+    renderLists();
   }
+
+  // function openModal(modal) {
+  //   modal.classList.add("active");
+  //   overlay.classList.add("active");
+  // }
 
   function closeModal(modal) {
     modal.classList.remove("active");
@@ -49,205 +164,53 @@ function screenController() {
     const modal = document.querySelector(".modal.active");
     closeModal(modal);
   });
-  // const updateLists = () => {
-  //   if (!getFromLocalStorage) {
-  //     console.log("No lists in storage");
-  //     createList("My List", "defaultImg");
-  //     // saveToLocalStorage(lists);
-  //   }
 
-  //Render tasks onto the page.
-  const renderTasks = (listId) => {};
+  function renderItems() {
+    lists.forEach((item) => {
+      let itemCard = document.createElement("div");
+      itemCard.classList.add("item-card");
 
-  //Render the lists onto the page.
-  const renderLists = () => {
-    clearLists();
-    currentLists.forEach((list) => {
-      const listElement = document.createElement("li");
-      listElement.classList.add("list");
+      let priorityIndicator = document.createElement("div");
+      priorityIndicator.classList.add("priority-indicator");
 
-      // listElement.innerText = list.name;
-      listContainerUL.appendChild(listElement);
-
-      const form = document.createElement("form");
-      form.classList.add("edit-form");
-
-      const listName = document.createElement("input");
-      listName.value = list.name;
-      listName.setAttribute("readonly", true);
-      listName.classList.add("list-name");
-      listName.dataset.listId = list.id;
-
-      form.appendChild(listName);
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (listName.value == null || listName.value === "") {
-          listName.value = list.name;
-        } else {
-          listModule.editList(list.name, listName.value, "defaultJPG");
-          renderLists();
-          toggleReadOnly(listName);
-        }
-      });
-
-      const editIcon = document.createElement("img");
-      editIcon.src = editBtn;
-      editIcon.dataset.icon = "edit";
-      editIcon.dataset.listId = list.id;
-
-      const deleteIcon = document.createElement("img");
-      deleteIcon.src = deleteBtn;
-      deleteIcon.dataset.icon = "delete";
-      deleteIcon.dataset.listId = list.id;
-
-      listElement.appendChild(form);
-      listElement.appendChild(editIcon);
-      listElement.appendChild(deleteIcon);
-    });
-  };
-
-  const clearLists = () => {
-    listContainerUL.innerHTML = "";
-  };
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const listName = input.value;
-    if (listName == null || listName === "") return;
-    listModule.createList(listName, "defaultImg");
-    input.value = "";
-    renderLists();
-    toggleInput();
-  });
-
-  listContainerUL.addEventListener("click", (e) => {
-    if (e.target.tagName.toLowerCase() === "input") {
-      selectedListId = e.target.dataset.listId;
-      selectedList = e.target;
-
-      if (selectedList == null) {
-        console.log("equals null");
-
-        highlightList(selectedList);
-        renderTasks(selectedListId);
-      } else {
-        unhighlightList(selectedList);
-        highlightList(selectedList);
-        renderTasks(selectedListId);
+      if (item.priority == 1) {
+        priorityIndicator.classList.add("priority1-indicator");
       }
-    }
+      if (item.priority == 2) {
+        priorityIndicator.classList.add("priority2-indicator");
+      }
+      if (item.priority == 3) {
+        priorityIndicator.classList.add("priority3-indicator");
+      }
 
-    if (e.target.dataset.icon == "edit") {
-      const listName = e.target.previousElementSibling;
-      const input = listName.firstElementChild;
-      toggleReadOnly(input);
-    }
+      let completeCheckbox = document.createElement("input");
+      completeCheckbox.setAttribute("type", "checkbox");
+      completeCheckbox.classList.add("complete-checkbox");
 
-    if (e.target.dataset.icon == "delete") {
-      const selectedListId = e.target.dataset.listId;
-      listModule.deleteList(selectedListId);
-      renderLists();
-    }
-  });
+      let itemName = document.createElement("h3");
+      itemName.textContent = item.name;
 
-  listContainerIcon.addEventListener("click", (e) => {
-    toggleInput();
-  });
+      let dueDate = document.createElement("h3");
+      dueDate.textContent = item.date;
+      dueDate.classList.add("date");
 
-  function toggleInput() {
-    if (input.style.visibility == "hidden") {
-      input.style.visibility = "visible";
-    } else {
-      input.style.visibility = "hidden";
-    }
+      let editItemBtn = document.createElement("button");
+      editItemBtn.classList.add("edit-item-btn");
+
+      let deleteItemBtn = document.createElement("button");
+      deleteItemBtn.classList.add("delete-item-btn");
+
+      itemCard.appendChild(priorityIndicator);
+      itemCard.appendChild(completeCheckbox);
+      itemCard.appendChild(itemTitle);
+      itemCard.appendChild(dueDate);
+      itemCard.appendChild(editItemBtn);
+      itemCard.appendChild(deleteItemBtn);
+    });
   }
 
-  function toggleReadOnly(input) {
-    if (input.hasAttribute("readonly")) {
-      input.removeAttribute("readonly");
-    } else {
-      input.setAttribute("readonly", "readonly");
-    }
-  }
-
-  function highlightList(list) {
-    list.classList.add("selected-list");
-  }
-
-  function unhighlightList(list) {
-    list.classList.remove("selected-list");
-  }
-
-  //Initial render:
+  //Initial render.
   renderLists();
 }
 
-export default screenController;
-// const listVariable = listModule.lists;
-
-// const lists = lists;
-// const wrapper = document.querySelector(".wrapper");
-// const sidebar = document.querySelector(".sidebar");
-// const main = document.querySelector(".main");
-// const sidebarHeader = document.querySelector(".sidebar-header");
-// const listContainer = document.querySelector(".list-container");
-
-// const createUI = () => {
-//   //Grab DOM elements.
-
-//   sidebarHeader.innerHTML = "To-Do App";
-
-//   //Create list contents in sidebar.
-
-//   const listContainerHeading = document.createElement("div");
-//   listContainerHeading.classList.add("list-container-heading");
-
-//   const listContainerTitle = document.createElement("h3");
-//   listContainerTitle.classList.add("list-container-title");
-//   listContainerTitle.textContent = "My lists";
-//   const listContainerIcon = new Image();
-//   listContainerIcon.classList.add("add");
-//   listContainerIcon.src = addBtn;
-
-//   listContainerHeading.appendChild(listContainerTitle);
-//   listContainerHeading.appendChild(listContainerIcon);
-
-//   //Unordered list
-//   const listContainerUL = document.createElement("ul");
-//   listContainerUL.classList.add("sidebar-ul");
-
-//   listContainer.appendChild(listContainerHeading);
-//   listContainer.appendChild(listContainerUL);
-
-//   listVariable.forEach((list) => {
-//     const listElement = document.createElement("li");
-//     // listElement.className.add("list");
-//     listElement.innerText = `${list.name}`;
-//     listContainerUL.appendChild(listElement);
-//   });
-
-//   //Input element.
-
-//   const form = document.createElement("form");
-//   const input = document.createElement("input");
-//   const icon = document.createElement("img");
-//   form.appendChild(input);
-//   form.appendChild(icon);
-
-//   listContainer.appendChild(form);
-
-//   //add event listener to the form.
-//   form.addEventListener("submit", (e) => {
-//     e.preventDefault();
-//     const listName = input.value;
-
-//     if (listName == null || listName === "") return;
-//     clearElement(listContainer);
-//     listModule.createList(listName, "defaultImg");
-//     clearLists();
-//   });
-// };
-
-// function clearLists() {}
-// export default createUI;
+export { screenController, getFromLocalStorage, saveToLocalStorage };

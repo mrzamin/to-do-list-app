@@ -1,7 +1,7 @@
 import "./styles.css";
 import * as listModule from "./list";
 import * as taskModule from "./task";
-import screenController from "./screenController";
+import { screenController } from "./screenController";
 
 // window.alert(window.location);
 // listModule.updateLists();

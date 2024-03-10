@@ -1,84 +1,73 @@
 import * as listModule from "./list.js";
 import { saveToLocalStorage } from "./localStorage";
 
-const Task = (name, description, date, priority) => {
+const Task = (listId, name, description, date, priority) => {
+  let taskId = Date.now().toString();
+  let complete = false;
   return {
+    taskId,
+    listId,
     name,
     description,
     date,
     priority,
+    complete,
   };
 };
 
-const createTask = (list, taskName, description, date, priority) => {
-  const chosenList = listModule.getList(list);
-  const newTask = Task(taskName, description, date, priority);
-  chosenList.tasks.push(newTask);
-  // saveToLocalStorage();
-  return newTask;
+const createTask = (listId, name, description, date, priority) => {
+  const list = listModule.getList(listId);
+  const task = Task(listId, name, description, date, priority);
+  list.tasks.push(task);
 };
 
 const editTask = (
-  list,
-  taskName,
+  listId,
+  taskId,
   newName,
   newDescription,
   newDate,
   newPriority
 ) => {
-  const chosenList = listModule.getList(list);
-  console.log(`Hello there ${chosenList.name}`);
+  const list = listModule.getList(listId);
+  const task = getTask(listId, taskId);
 
-  const chosenTask = getTask(`${chosenList.name}`, taskName);
-  console.log(`Hello there ${chosenTask.name}`);
-  chosenTask.name = newName;
-  chosenTask.description = newDescription;
-  chosenTask.date = newDate;
-  chosenTask.priority = newPriority;
-
-  let updatedTask = chosenTask;
-  // saveToLocalStorage();
-  return updatedTask;
+  task.name = newName;
+  task.description = newDescription;
+  task.date = newDate;
+  task.priority = newPriority;
 };
 
-const deleteTask = (list, taskName) => {
-  const selectedList = listModule.getList(list);
-  const chosenTaskIndex = getTaskIndex(list, taskName);
-  selectedList.tasks.splice(chosenTaskIndex, 1);
-  // saveToLocalStorage();
+const deleteTask = (listId, taskId) => {
+  const list = listModule.getList(listId);
+  const taskIndex = getTaskIndex(listId, taskId);
+  list.tasks.splice(taskIndex, 1);
 };
 
-const markComplete = (list, taskName) => {
-  const selectedList = listModule.getList(list);
-  const chosenTask = getTask(list, taskName);
-  const chosenTaskIndex = getTaskIndex(list, taskName);
-  selectedList.completed.unshift(chosenTask);
-  // console.log(selectedList.completed);
-  selectedList.tasks.splice(chosenTaskIndex, 1);
-  // saveToLocalStorage();
+const markComplete = (listId, taskId) => {
+  const list = listModule.getList(list);
+  const task = getTask(listId, taskId);
+  const taskIndex = getTaskIndex(listId, taskId);
+  list.completed.unshift(task);
+  list.tasks.splice(taskIndex, 1);
 };
 
-const getTask = (list, taskName) => {
-  const selectedList = listModule.getList(list);
-  //May need to create a new identifier for task.
-  //Loop through the specified list obj, find the "tasks" key, find the task in the array.
-  for (const key in selectedList) {
+const getTask = (listId, taskId) => {
+  const list = listModule.getList(listId);
+  for (const key in list) {
     if (key === "tasks") {
-      const task = selectedList[key].find((task) => task.name === taskName);
+      const task = list[key].find((task) => task.taskId === taskId);
       if (task) return task;
     }
   }
 };
 
-const getTaskIndex = (list, taskName) => {
-  const selectedList = listModule.getList(list);
-  //   console.log(selectedList);
-  for (let key in selectedList) {
+const getTaskIndex = (listId, taskId) => {
+  const list = listModule.getList(listId);
+  for (let key in list) {
     if (key === "tasks") {
-      const taskIndex = selectedList[key].findIndex(
-        (task) => task.name === taskName
-      );
-      return taskIndex;
+      const taskIndex = list[key].findIndex((task) => task.taskId === taskId);
+      if (taskIndex) return taskIndex;
     }
   }
 };

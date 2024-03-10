@@ -1,5 +1,4 @@
-import { getFromLocalStorage, saveToLocalStorage } from "./localStorage";
-import screenController from "./screenController";
+import { getFromLocalStorage, saveToLocalStorage } from "./screenController";
 
 let lists = getFromLocalStorage() || [];
 
@@ -30,28 +29,27 @@ const List = (name, icon) => {
   };
 };
 
-const createList = (chosenName, chosenIcon) => {
-  const newList = List(chosenName, chosenIcon);
-  lists.push(newList);
+const createList = (name, icon) => {
+  const list = List(name, icon);
+  lists.push(list);
   saveToLocalStorage(lists);
-  return newList;
 };
 
-const editList = (listName, newListName, newIcon) => {
-  const selectedList = getList(listName);
-  selectedList.name = newListName;
-  selectedList.icon = newIcon;
-  saveToLocalStorage(lists);
+const editListName = (listId, newName, icon) => {
+  const list = getList(listId);
+  list.name = newName;
+  list.icon = icon;
+  saveToLocalStorage(lists, listId);
 };
 
 const deleteList = (listId) => {
-  const selectedListIndex = getListIndex(listId);
-  lists.splice(selectedListIndex, 1);
-  saveToLocalStorage(lists);
+  const listIndex = getListIndex(listId);
+  lists.splice(listIndex, 1);
+  saveToLocalStorage(lists, listId);
 };
 
-const getList = (listName) => lists.find((list) => list.name === listName);
+const getList = (listId) => lists.find((list) => list.id === listId);
 
 const getListIndex = (listId) => lists.findIndex((list) => list.id === listId);
 
-export { lists, createList, editList, deleteList, getList, getListIndex };
+export { lists, createList, editListName, deleteList, getList, getListIndex };
