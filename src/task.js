@@ -1,11 +1,11 @@
 import * as listModule from "./list.js";
-import { saveToLocalStorage } from "./localStorage";
+import { getFromLocalStorage, saveToLocalStorage } from "./screenController";
 
 const Task = (listId, name, description, date, priority) => {
-  let taskId = Date.now().toString();
+  let id = Date.now().toString();
   let complete = false;
   return {
-    taskId,
+    id,
     listId,
     name,
     description,
@@ -29,7 +29,6 @@ const editTask = (
   newDate,
   newPriority
 ) => {
-  const list = listModule.getList(listId);
   const task = getTask(listId, taskId);
 
   task.name = newName;
@@ -42,6 +41,7 @@ const deleteTask = (listId, taskId) => {
   const list = listModule.getList(listId);
   const taskIndex = getTaskIndex(listId, taskId);
   list.tasks.splice(taskIndex, 1);
+  saveToLocalStorage(listModule.lists, listId);
 };
 
 const markComplete = (listId, taskId) => {
@@ -56,7 +56,7 @@ const getTask = (listId, taskId) => {
   const list = listModule.getList(listId);
   for (const key in list) {
     if (key === "tasks") {
-      const task = list[key].find((task) => task.taskId === taskId);
+      const task = list[key].find((task) => task.id === taskId);
       if (task) return task;
     }
   }

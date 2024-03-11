@@ -22,6 +22,13 @@
         </div>
       </div>
       <main class="main">
+        <div class="main-heading">
+          <h2 class="list-heading"></h2>
+          <div class="add-btn-container">
+            <h3>Add item</h3>
+            <img src="addBtn.svg" alt="" />
+          </div>
+        </div>
         <div class="main-content"></div>
       </main>
     </div>
@@ -47,14 +54,17 @@
           />
         </div>
         <div>
-          <input type="date" min="2024/03/01" max="2024/01/2050" name="date" />
-          <select name="priority" id="priority">
+          <input
+            type="date"
+            class="task-date"
+            min="2024/03/01"
+            max="2024/01/2050"
+            name="date"
+          />
+          <select class="task-priority" name="priority" id="priority">
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
-          </select>
-          <select name="list-options" id="list-options">
-            List
           </select>
         </div>
         <div>

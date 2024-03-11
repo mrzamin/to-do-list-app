@@ -23,11 +23,12 @@ function getFromLocalStorage() {
 }
 
 function getIdFromLocalStorage() {
-  const selectedListId = localStorage.getItem(localStorageIdKey);
+  const selectedListId = JSON.parse(localStorage.getItem(localStorageIdKey));
   return selectedListId;
 }
 
 let selectedListId = getIdFromLocalStorage();
+let selectedTaskId = "none";
 
 function screenController() {
   const lists = listModule.lists;
@@ -39,15 +40,76 @@ function screenController() {
   const overlay = document.querySelector("#overlay");
   const cancelBtn = document.querySelector(".list-cancel");
   const submitBtn = document.querySelector(".list-submit");
+  const taskContainer = document.querySelector(".main-content");
+  const addItemBtn = document.querySelector(".add-btn-container");
+  const addItemForm = document.querySelector(".task-form");
+  const taskTitleInput = document.querySelector(".task-title");
+  const taskName = document.querySelector(".task-title");
+  const taskDescr = document.querySelector(".task-description");
+  const taskDate = document.querySelector(".task-date");
+  const taskPriority = document.querySelector(".task-priority");
+
+  function addItem(e) {
+    e.preventDefault();
+    if (selectedTaskId == "none") {
+      if (taskName.value !== "") {
+        taskModule.createTask(
+          selectedListId,
+          taskName.value,
+          taskDescr.value,
+          taskDate.value,
+          taskPriority.value
+        );
+        // saveToLocalStorage(lists, selectedListId);
+        // const taskModal = document.querySelector("#task-modal");
+        // closeModal(taskModal);
+        // renderLists();
+        // taskName.value = "";
+        // taskDescr.value = "";
+        // taskDate.value = "";
+        // taskPriority.value = "";
+      }
+    } else {
+      console.log(`The seelcted task id is ${selectedTaskId}`);
+      taskModule.editTask(
+        selectedListId,
+        selectedTaskId,
+        taskName.value,
+        taskDescr.value,
+        taskDate.value,
+        taskPriority.value
+      );
+    }
+    saveToLocalStorage(lists, selectedListId);
+    const taskModal = document.querySelector("#task-modal");
+    closeModal(taskModal);
+    renderLists();
+    taskName.value = "";
+    taskDescr.value = "";
+    taskDate.value = "";
+    taskPriority.value = "";
+  }
+
+  addItemForm.addEventListener("submit", (e) => {
+    addItem(e);
+  });
+
+  addItemBtn.addEventListener("click", () => {
+    selectedTaskId = "none";
+    const taskModal = document.querySelector("#task-modal");
+    openModal(taskModal);
+  });
 
   const renderLists = () => {
     clearLists();
+
     lists.forEach((list) => {
       const listName = document.createElement("input");
       listName.value = list.name;
       listName.classList.add("list-name");
       listName.setAttribute("readonly", true);
       listName.dataset.listId = list.id;
+      console.log(selectedListId);
       if (list.id === selectedListId) {
         listName.classList.add("selected-list");
       }
@@ -74,11 +136,18 @@ function screenController() {
 
       listContainer.appendChild(listElement);
     });
+
+    const selectedList = listModule.getList(selectedListId);
+    renderTasks(selectedList);
   };
 
   //clears list collection from UI.
   const clearLists = () => {
     listContainer.innerHTML = "";
+  };
+
+  const clearTasks = () => {
+    taskContainer.innerHTML = "";
   };
 
   //Add event listener to add list form.
@@ -105,6 +174,18 @@ function screenController() {
   addListBtn.addEventListener("click", toggleFormDisplay);
 
   listContainer.addEventListener("click", selectElement);
+
+  // taskContainer.addEventListener("click", selectItemElement);
+
+  // function selectItemElement(e) {
+  //   let selectedTaskId = e.target.dataset.taskId;
+  //   console.log(`selected task id is ${selectedTaskId}`);
+  //   let btn = e.target.dataset.btn;
+  //   if (btn == "delete") {
+  //     taskModule.deleteTask(selectedListId, selectedTaskId);
+  //     renderLists();
+  //   }
+  // }
 
   function selectElement(e) {
     selectedListId = e.target.dataset.listId;
@@ -150,10 +231,10 @@ function screenController() {
     renderLists();
   }
 
-  // function openModal(modal) {
-  //   modal.classList.add("active");
-  //   overlay.classList.add("active");
-  // }
+  function openModal(modal) {
+    modal.classList.add("active");
+    overlay.classList.add("active");
+  }
 
   function closeModal(modal) {
     modal.classList.remove("active");
@@ -165,47 +246,85 @@ function screenController() {
     closeModal(modal);
   });
 
-  function renderItems() {
-    lists.forEach((item) => {
+  function renderTasks(selectedList) {
+    clearTasks();
+    const listHeading = document.querySelector(".list-heading");
+    listHeading.innerHTML = selectedList.name;
+    selectedList.tasks.forEach((task) => {
       let itemCard = document.createElement("div");
       itemCard.classList.add("item-card");
+      // itemCard.dataset.taskId = task.id;
 
       let priorityIndicator = document.createElement("div");
       priorityIndicator.classList.add("priority-indicator");
 
-      if (item.priority == 1) {
+      if (task.priority == 1) {
         priorityIndicator.classList.add("priority1-indicator");
       }
-      if (item.priority == 2) {
+      if (task.priority == 2) {
         priorityIndicator.classList.add("priority2-indicator");
       }
-      if (item.priority == 3) {
+      if (task.priority == 3) {
         priorityIndicator.classList.add("priority3-indicator");
       }
 
       let completeCheckbox = document.createElement("input");
       completeCheckbox.setAttribute("type", "checkbox");
       completeCheckbox.classList.add("complete-checkbox");
+      completeCheckbox.dataset.taskId = task.id;
 
       let itemName = document.createElement("h3");
-      itemName.textContent = item.name;
+      itemName.textContent = task.name;
 
       let dueDate = document.createElement("h3");
-      dueDate.textContent = item.date;
+      dueDate.textContent = task.date;
       dueDate.classList.add("date");
 
-      let editItemBtn = document.createElement("button");
-      editItemBtn.classList.add("edit-item-btn");
+      let trashIcon = new Image();
+      trashIcon.dataset.taskId = task.id;
+      trashIcon.src = deleteBtn;
 
-      let deleteItemBtn = document.createElement("button");
+      let deleteItemBtn = document.createElement("div");
       deleteItemBtn.classList.add("delete-item-btn");
+      deleteItemBtn.appendChild(trashIcon);
+      deleteItemBtn.dataset.taskId = task.id;
+      deleteItemBtn.dataset.btn = "delete";
+
+      deleteItemBtn.addEventListener("click", () => {
+        let selectedTaskId = task.id;
+        taskModule.deleteTask(selectedListId, selectedTaskId);
+        renderLists();
+      });
+
+      let pencilIcon = new Image();
+      pencilIcon.dataset.taskId = task.id;
+      pencilIcon.src = editBtn;
+
+      let editItemBtn = document.createElement("div");
+      editItemBtn.classList.add("edit-item-btn");
+      editItemBtn.appendChild(pencilIcon);
+      editItemBtn.dataset.taskId = task.id;
+      editItemBtn.dataset.btn = "edit";
+
+      editItemBtn.addEventListener("click", () => {
+        selectedTaskId = task.id;
+        console.log(selectedTaskId);
+        taskName.value = task.name;
+        taskDescr.value = task.description;
+        taskPriority.value = task.priority;
+        taskDate.value = task.date;
+        const taskModal = document.querySelector("#task-modal");
+        openModal(taskModal);
+      });
 
       itemCard.appendChild(priorityIndicator);
       itemCard.appendChild(completeCheckbox);
-      itemCard.appendChild(itemTitle);
+      itemCard.appendChild(itemName);
       itemCard.appendChild(dueDate);
       itemCard.appendChild(editItemBtn);
       itemCard.appendChild(deleteItemBtn);
+
+      taskContainer.appendChild(itemCard);
     });
   }
 

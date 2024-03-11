@@ -116,3 +116,26 @@
 #list-modal.active {
   transform: translate(-50%, -50%) scale(1);
 }
+
+/* Task container. */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.item-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr 7fr 1fr 1fr 1fr;
+  border: 1px solid black;
+}
+
+.main-heading {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-btn-container {
+  display: flex;
+  width: 150px;
+  border: 1px solid black;
+}
