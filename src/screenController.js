@@ -34,14 +34,14 @@ function screenController() {
   const lists = listModule.lists;
   const listContainer = document.querySelector(".list-container");
   const addListForm = document.querySelector(".list-form");
-  const addListBtn = document.querySelector(".list-collection-add-btn");
+  const addListBtn = document.querySelector(".plus-btn-container");
   const listInput = document.querySelector(".list-input");
   const listForm = document.querySelector("#list-form");
   const overlay = document.querySelector("#overlay");
   const cancelBtn = document.querySelector(".list-cancel");
   const submitBtn = document.querySelector(".list-submit");
   const taskContainer = document.querySelector(".main-content");
-  const addItemBtn = document.querySelector(".add-btn-container");
+  const addItemBtn = document.querySelector(".add-item-container");
   const addItemForm = document.querySelector(".task-form");
   const taskTitleInput = document.querySelector(".task-title");
   const taskName = document.querySelector(".task-title");
@@ -104,35 +104,42 @@ function screenController() {
     clearLists();
 
     lists.forEach((list) => {
-      const listName = document.createElement("input");
-      listName.value = list.name;
+      const listName = document.createElement("p");
+      listName.innerHTML = list.name;
       listName.classList.add("list-name");
       listName.setAttribute("readonly", true);
       listName.dataset.listId = list.id;
-      console.log(selectedListId);
+      // console.log(selectedListId);
       if (list.id === selectedListId) {
         listName.classList.add("selected-list");
       }
 
-      const editListForm = document.createElement("form");
-      editListForm.classList.add("edit-list-form");
-      editListForm.appendChild(listName);
+      // const editListForm = document.createElement("form");
+      // editListForm.classList.add("edit-list-form");
+      // editListForm.appendChild(listName);
 
       const editListBtn = document.createElement("img");
       editListBtn.src = editBtn;
       editListBtn.dataset.btn = "edit";
+      editListBtn.classList.add("list-edit");
+
       editListBtn.dataset.listId = list.id;
 
       const deleteListBtn = document.createElement("img");
       deleteListBtn.src = deleteBtn;
       deleteListBtn.dataset.btn = "delete";
       deleteListBtn.dataset.listId = list.id;
+      deleteListBtn.classList.add("list-delete");
+
+      const btnContainer = document.createElement("div");
+      btnContainer.classList.add("list-btn-container");
+      btnContainer.appendChild(editListBtn);
+      btnContainer.appendChild(deleteListBtn);
 
       const listElement = document.createElement("li");
       listElement.classList.add("list-element");
-      listElement.appendChild(editListForm);
-      listElement.appendChild(editListBtn);
-      listElement.appendChild(deleteListBtn);
+      listElement.appendChild(listName);
+      listElement.appendChild(btnContainer);
 
       listContainer.appendChild(listElement);
     });
@@ -190,7 +197,7 @@ function screenController() {
   function selectElement(e) {
     selectedListId = e.target.dataset.listId;
     saveToLocalStorage(lists, selectedListId);
-    if (e.target.tagName.toLowerCase() === "input") {
+    if (e.target.tagName.toLowerCase() === "p") {
       renderLists();
     }
     if (e.target.dataset.btn == "edit") {
@@ -258,22 +265,27 @@ function screenController() {
       let priorityIndicator = document.createElement("div");
       priorityIndicator.classList.add("priority-indicator");
 
-      if (task.priority == 1) {
-        priorityIndicator.classList.add("priority1-indicator");
+      if (task.priority == "Low") {
+        priorityIndicator.classList.add("priority-low");
       }
-      if (task.priority == 2) {
-        priorityIndicator.classList.add("priority2-indicator");
+      if (task.priority == "Medium") {
+        priorityIndicator.classList.add("priority-medium");
       }
-      if (task.priority == 3) {
-        priorityIndicator.classList.add("priority3-indicator");
+      if (task.priority == "High") {
+        priorityIndicator.classList.add("priority-high");
       }
 
-      let completeCheckbox = document.createElement("input");
-      completeCheckbox.setAttribute("type", "checkbox");
-      completeCheckbox.classList.add("complete-checkbox");
-      completeCheckbox.dataset.taskId = task.id;
+      let checkbox = document.createElement("input");
+      checkbox.setAttribute("type", "checkbox");
+      checkbox.dataset.taskId = task.id;
+      checkbox.classList.add("checkbox");
+
+      let checkboxContainer = document.createElement("div");
+      checkboxContainer.classList.add("checkbox-container");
+      checkboxContainer.appendChild(checkbox);
 
       let itemName = document.createElement("h3");
+      itemName.classList.add("item-name");
       itemName.textContent = task.name;
 
       let dueDate = document.createElement("h3");
@@ -318,7 +330,7 @@ function screenController() {
       });
 
       itemCard.appendChild(priorityIndicator);
-      itemCard.appendChild(completeCheckbox);
+      itemCard.appendChild(checkboxContainer);
       itemCard.appendChild(itemName);
       itemCard.appendChild(dueDate);
       itemCard.appendChild(editItemBtn);
