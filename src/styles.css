@@ -21,6 +21,7 @@ body {
   --red: #f87171;
   --yellow: #fef3c7;
   --green: #86efac;
+  --grey: #9ca3af;
   /* --main-grey-color-transparent: rgba(51, 51, 51, 255, 0.2); */
 }
 
@@ -34,9 +35,6 @@ body {
 /* sidebar styles. */
 .sidebar {
   background-color: var(--sidebar-color);
-  /* display: flex;
-  flex-direction: column;
-  gap: 10px; */
 }
 
 .sidebar-title {
@@ -90,7 +88,7 @@ body {
 .list-collection-title {
   margin-left: 0.5rem;
   font-size: 1rem;
-  color: #9ca3af;
+  color: var(--grey);
 }
 
 .plus-btn-container {
@@ -106,6 +104,47 @@ body {
   justify-content: space-around;
   width: 70%;
 } */
+
+.list-input-container {
+  position: relative;
+  width: 95%;
+  /* border: 1px solid black; */
+}
+
+.list-input {
+  visibility: hidden;
+  width: 100%;
+  height: 55px;
+  margin-left: 5px;
+  padding: 0.5rem;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid var(--main-grey-color);
+  color: var(--emerald-green);
+}
+
+.list-input-container span {
+  position: absolute;
+  pointer-events: none;
+  left: 0;
+  padding: 10px;
+  visibility: hidden;
+}
+
+.list-input-container input:focus ~ span {
+  transform: translateX(10px) translateY(-7px);
+  transition: 0.5s;
+  font-size: 0.7rem;
+  padding: 0 10px;
+  background: var(--emerald-green);
+  color: white;
+  border-left: 1px solid var(--emerald-green);
+  border-right: 1px solid var(--emerald-green);
+}
+
+.list-input-container input:focus {
+  border: 1px solid var(--emerald-green);
+}
 
 .list-btn-container {
   display: flex;
@@ -124,7 +163,6 @@ body {
 
 .list-element {
   height: max-content;
-  width: 100%;
   display: flex;
   /* border: 1px solid var(--main-grey-color); */
   background-color: var(--sidebar-color);
@@ -159,12 +197,6 @@ body {
   align-items: center;
 }
 
-.list-input {
-  /* border-color: red; */
-  margin-top: 20px;
-  background: var(--sidebar-color);
-}
-
 h1 {
   font-size: 1.8rem;
 }
@@ -187,10 +219,6 @@ h1 {
   border-bottom: 2px solid var(--emerald-green);
 }
 /* Doesn't work fill */
-
-.list-input {
-  visibility: hidden;
-}
 
 .list-container-heading {
   display: flex;
@@ -328,6 +356,10 @@ h1 {
 
 .priority-high {
   background-color: var(--red);
+}
+
+.priority-default {
+  background-color: var(--grey);
 }
 
 .checkbox-container {

@@ -15,9 +15,7 @@ function saveToLocalStorage(lists, selectedListId) {
 }
 
 function getFromLocalStorage() {
-  const data = localStorage.getItem(localStorageKey)
-    ? JSON.parse(localStorage.getItem(localStorageKey))
-    : null;
+  const data = JSON.parse(localStorage.getItem(localStorageKey));
   // return JSON.parse(localStorage.getItem(localStorageKey));
   return data;
 }
@@ -27,15 +25,20 @@ function getIdFromLocalStorage() {
   return selectedListId;
 }
 
-let selectedListId = getIdFromLocalStorage();
+let selectedListId = "none";
+
 let selectedTaskId = "none";
 
 function screenController() {
   const lists = listModule.lists;
+
+  saveToLocalStorage(lists, selectedListId);
+  selectedListId = getIdFromLocalStorage();
   const listContainer = document.querySelector(".list-container");
   const addListForm = document.querySelector(".list-form");
   const addListBtn = document.querySelector(".plus-btn-container");
   const listInput = document.querySelector(".list-input");
+  const listSpan = document.querySelector(".list-span");
   const listForm = document.querySelector("#list-form");
   const overlay = document.querySelector("#overlay");
   const cancelBtn = document.querySelector(".list-cancel");
@@ -60,14 +63,6 @@ function screenController() {
           taskDate.value,
           taskPriority.value
         );
-        // saveToLocalStorage(lists, selectedListId);
-        // const taskModal = document.querySelector("#task-modal");
-        // closeModal(taskModal);
-        // renderLists();
-        // taskName.value = "";
-        // taskDescr.value = "";
-        // taskDate.value = "";
-        // taskPriority.value = "";
       }
     } else {
       console.log(`The seelcted task id is ${selectedTaskId}`);
@@ -114,10 +109,6 @@ function screenController() {
         listName.classList.add("selected-list");
       }
 
-      // const editListForm = document.createElement("form");
-      // editListForm.classList.add("edit-list-form");
-      // editListForm.appendChild(listName);
-
       const editListBtn = document.createElement("img");
       editListBtn.src = editBtn;
       editListBtn.dataset.btn = "edit";
@@ -163,16 +154,19 @@ function screenController() {
     const listName = listInput.value;
     if (listName == null || listName === "") return;
     listModule.createList(listName, "defaultImg");
+    toggleFormDisplay();
     listInput.value = "";
     renderLists();
-    toggleFormDisplay();
   });
 
   function toggleFormDisplay() {
+    console.log("toggled activated");
     if (listInput.style.visibility == "hidden") {
       listInput.style.visibility = "visible";
+      listSpan.style.visibility = "visible";
     } else {
       listInput.style.visibility = "hidden";
+      listSpan.style.visibility = "hidden";
     }
   }
 
@@ -181,18 +175,6 @@ function screenController() {
   addListBtn.addEventListener("click", toggleFormDisplay);
 
   listContainer.addEventListener("click", selectElement);
-
-  // taskContainer.addEventListener("click", selectItemElement);
-
-  // function selectItemElement(e) {
-  //   let selectedTaskId = e.target.dataset.taskId;
-  //   console.log(`selected task id is ${selectedTaskId}`);
-  //   let btn = e.target.dataset.btn;
-  //   if (btn == "delete") {
-  //     taskModule.deleteTask(selectedListId, selectedTaskId);
-  //     renderLists();
-  //   }
-  // }
 
   function selectElement(e) {
     selectedListId = e.target.dataset.listId;
@@ -223,6 +205,7 @@ function screenController() {
     listModule.editListName(selectedListId, listName.value, "default");
     renderLists();
     closeModal(listModal);
+    toggleFormDisplay();
   });
 
   function openListModal(selectedListId) {
@@ -267,12 +250,12 @@ function screenController() {
 
       if (task.priority == "Low") {
         priorityIndicator.classList.add("priority-low");
-      }
-      if (task.priority == "Medium") {
+      } else if (task.priority == "Medium") {
         priorityIndicator.classList.add("priority-medium");
-      }
-      if (task.priority == "High") {
+      } else if (task.priority == "High") {
         priorityIndicator.classList.add("priority-high");
+      } else {
+        priorityIndicator.classList.add("priority-default");
       }
 
       let checkbox = document.createElement("input");
@@ -342,6 +325,8 @@ function screenController() {
 
   //Initial render.
   renderLists();
+  const selectedList = listModule.getList(selectedListId);
+  renderTasks(selectedList);
 }
 
 export { screenController, getFromLocalStorage, saveToLocalStorage };
