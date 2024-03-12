@@ -26,14 +26,15 @@ function getIdFromLocalStorage() {
 }
 
 let selectedListId = "none";
+let selectedList = "none";
 
 let selectedTaskId = "none";
 
 function screenController() {
   const lists = listModule.lists;
-
   saveToLocalStorage(lists, selectedListId);
   selectedListId = getIdFromLocalStorage();
+
   const listContainer = document.querySelector(".list-container");
   const addListForm = document.querySelector(".list-form");
   const addListBtn = document.querySelector(".plus-btn-container");
@@ -44,6 +45,7 @@ function screenController() {
   const cancelBtn = document.querySelector(".list-cancel");
   const submitBtn = document.querySelector(".list-submit");
   const taskContainer = document.querySelector(".main-content");
+  // const main = document.querySelector(".main");
   const addItemBtn = document.querySelector(".add-item-container");
   const addItemForm = document.querySelector(".task-form");
   const taskTitleInput = document.querySelector(".task-title");
@@ -51,6 +53,8 @@ function screenController() {
   const taskDescr = document.querySelector(".task-description");
   const taskDate = document.querySelector(".task-date");
   const taskPriority = document.querySelector(".task-priority");
+
+  listInput.addEventListener("mouseout", toggleFormDisplay);
 
   function addItem(e) {
     e.preventDefault();
@@ -78,7 +82,7 @@ function screenController() {
     saveToLocalStorage(lists, selectedListId);
     const taskModal = document.querySelector("#task-modal");
     closeModal(taskModal);
-    renderLists();
+    renderTasks(selectedList);
     taskName.value = "";
     taskDescr.value = "";
     taskDate.value = "";
@@ -135,8 +139,8 @@ function screenController() {
       listContainer.appendChild(listElement);
     });
 
-    const selectedList = listModule.getList(selectedListId);
-    renderTasks(selectedList);
+    // const selectedList = listModule.getList(selectedListId);
+    // renderTasks(selectedList);
   };
 
   //clears list collection from UI.
@@ -181,6 +185,8 @@ function screenController() {
     saveToLocalStorage(lists, selectedListId);
     if (e.target.tagName.toLowerCase() === "p") {
       renderLists();
+      selectedList = listModule.getList(selectedListId);
+      renderTasks(selectedList);
     }
     if (e.target.dataset.btn == "edit") {
       openListModal(selectedListId);
@@ -238,6 +244,8 @@ function screenController() {
 
   function renderTasks(selectedList) {
     clearTasks();
+    // main.innerHTML = "";
+    addItemBtn.style.visibility = "visible";
     const listHeading = document.querySelector(".list-heading");
     listHeading.innerHTML = selectedList.name;
     selectedList.tasks.forEach((task) => {
@@ -325,8 +333,8 @@ function screenController() {
 
   //Initial render.
   renderLists();
-  const selectedList = listModule.getList(selectedListId);
-  renderTasks(selectedList);
+  selectedList = listModule.getList(selectedListId);
+  // renderTasks(selectedList);
 }
 
 export { screenController, getFromLocalStorage, saveToLocalStorage };

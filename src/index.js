@@ -1,7 +1,8 @@
 import "./styles.css";
 import * as listModule from "./list";
 import * as taskModule from "./task";
-import { screenController } from "./screenController";
+import * as screenController from "./screenController";
+import { renderHomepage } from "./homepage";
 
 // window.alert(window.location);
 // listModule.updateLists();
@@ -9,25 +10,14 @@ import { screenController } from "./screenController";
 
 // let familyList = listModule.createList("Family", "family");
 // listModule.updateLists();
-screenController();
+let selectedList = screenController.selectedList;
+console.log(selectedList);
 
-// let task1 = taskModule.createTask(
-//   "Groceries",
-//   "get apples",
-//   "get apples from fresh thyme",
-//   "2/6",
-//   "high"
-// );
+// renderHomepage();
 
-// let task2 = taskModule.createTask(
-//   "Groceries",
-//   "Text Quentin",
-//   "Text Q before end of day",
-//   "2/6",
-//   "high"
-// );
-
-// let completedTask = taskModule.markComplete("Groceries", "Text Quentin");
-// let completedTask1 = taskModule.markComplete("Groceries", "get apples");
-
-// console.log(groceryList);
+// if (!selectedList == "none") {
+//   screenController.screenController();
+// } else {
+//   renderHomepage();
+// }
+screenController.screenController();

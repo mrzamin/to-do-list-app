@@ -30,8 +30,14 @@ const List = (name, icon) => {
 };
 
 const createList = (name, icon) => {
-  const list = List(name, icon);
-  lists.push(list);
+  //If there is already a list with an identical name, add "1"
+  if (lists.find((list) => list.name === name)) {
+    const list = List(name + "1", icon);
+    lists.push(list);
+  } else {
+    const list = List(name, icon);
+    lists.push(list);
+  }
   saveToLocalStorage(lists);
 };
 
