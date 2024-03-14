@@ -5,6 +5,7 @@ import * as taskModule from "./task";
 import addBtn from "./addBtn.svg";
 import editBtn from "./editBtn.svg";
 import deleteBtn from "./deleteBtn.svg";
+import plusBtn from "./plusBtn.svg";
 
 const localStorageKey = "lists";
 const localStorageIdKey = "listId";
@@ -46,7 +47,7 @@ function screenController() {
   const submitBtn = document.querySelector(".list-submit");
   const taskContainer = document.querySelector(".main-content");
   // const main = document.querySelector(".main");
-  const addItemBtn = document.querySelector(".add-item-container");
+  // const addItemBtn = document.querySelector(".add-item-container");
   const addItemForm = document.querySelector(".task-form");
   const taskTitleInput = document.querySelector(".task-title");
   const taskName = document.querySelector(".task-title");
@@ -91,12 +92,6 @@ function screenController() {
 
   addItemForm.addEventListener("submit", (e) => {
     addItem(e);
-  });
-
-  addItemBtn.addEventListener("click", () => {
-    selectedTaskId = "none";
-    const taskModal = document.querySelector("#task-modal");
-    openModal(taskModal);
   });
 
   const renderLists = () => {
@@ -242,12 +237,54 @@ function screenController() {
     closeModal(modal);
   });
 
+  // <main class="main">
+  //   <div class="main-heading">
+  //     <h1 class="list-heading"></h1>
+  //     <div class="add-item-container">
+  //       <h3>Add item</h3>
+  //       <img src="plusBtn.svg" alt="Add item" />
+  //     </div>
+  //   </div>
+  //   <div class="main-content"></div>
+  // </main>;
+
+  function renderHeader(selectedList) {
+    const header = document.createElement("div");
+    header.classList.add("main-heading");
+
+    const listTitle = document.createElement("h1");
+    listTitle.innerHTML = selectedList.name;
+    listTitle.classList.add("list-heading");
+
+    const addItemContainer = document.createElement("div");
+    addItemContainer.classList.add("add-item-container");
+
+    addItemContainer.addEventListener("click", () => {
+      selectedTaskId = "none";
+      const taskModal = document.querySelector("#task-modal");
+      openModal(taskModal);
+    });
+
+    const addItemh3 = document.createElement("h3");
+    addItemh3.innerHTML = "Add item";
+
+    const addItemImg = document.createElement("img");
+    addItemImg.src = plusBtn;
+
+    addItemContainer.appendChild(addItemh3);
+    addItemContainer.appendChild(addItemImg);
+
+    header.appendChild(listTitle);
+    header.appendChild(addItemContainer);
+
+    taskContainer.appendChild(header);
+  }
+
   function renderTasks(selectedList) {
     clearTasks();
-    // main.innerHTML = "";
-    addItemBtn.style.visibility = "visible";
-    const listHeading = document.querySelector(".list-heading");
-    listHeading.innerHTML = selectedList.name;
+
+    renderHeader(selectedList);
+
     selectedList.tasks.forEach((task) => {
       let itemCard = document.createElement("div");
       itemCard.classList.add("item-card");
@@ -293,10 +330,13 @@ function screenController() {
       deleteItemBtn.dataset.taskId = task.id;
       deleteItemBtn.dataset.btn = "delete";
 
-      deleteItemBtn.addEventListener("click", () => {
-        let selectedTaskId = task.id;
+      deleteItemBtn.addEventListener("click", (e) => {
+        // let selectedTaskId = task.id;
+        selectedTaskId = task.id;
+        console.log(selectedTaskId);
         taskModule.deleteTask(selectedListId, selectedTaskId);
-        renderLists();
+        // renderLists();
+        renderTasks(selectedList);
       });
 
       let pencilIcon = new Image();
@@ -311,7 +351,6 @@ function screenController() {
 
       editItemBtn.addEventListener("click", () => {
         selectedTaskId = task.id;
-        console.log(selectedTaskId);
         taskName.value = task.name;
         taskDescr.value = task.description;
         taskPriority.value = task.priority;
@@ -333,6 +372,7 @@ function screenController() {
 
   //Initial render.
   renderLists();
+  console.log(selectedTaskId);
   selectedList = listModule.getList(selectedListId);
   // renderTasks(selectedList);
 }

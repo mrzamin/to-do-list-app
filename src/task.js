@@ -66,7 +66,7 @@ const getTaskIndex = (listId, taskId) => {
   const list = listModule.getList(listId);
   for (let key in list) {
     if (key === "tasks") {
-      const taskIndex = list[key].findIndex((task) => task.taskId === taskId);
+      const taskIndex = list[key].findIndex((task) => task.id === taskId);
       if (taskIndex) return taskIndex;
     }
   }

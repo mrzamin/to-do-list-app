@@ -10,8 +10,6 @@ import { renderHomepage } from "./homepage";
 
 // let familyList = listModule.createList("Family", "family");
 // listModule.updateLists();
-let selectedList = screenController.selectedList;
-console.log(selectedList);
 
 // renderHomepage();
 
