@@ -43,7 +43,7 @@ function screenController() {
   const listSpan = document.querySelector(".list-span");
   const listForm = document.querySelector("#list-form");
   const overlay = document.querySelector("#overlay");
-  const cancelBtn = document.querySelector(".list-cancel");
+  const cancelBtns = document.querySelectorAll(".cancel");
   const submitBtn = document.querySelector(".list-submit");
   const taskContainer = document.querySelector(".main-content");
   // const main = document.querySelector(".main");
@@ -193,9 +193,11 @@ function screenController() {
     }
   }
 
-  cancelBtn.addEventListener("click", () => {
-    const listModal = document.querySelector(".modal.active");
-    closeModal(listModal);
+  cancelBtns.forEach((button) => {
+    button.addEventListener("click", () => {
+      const modal = document.querySelector(".modal.active");
+      closeModal(modal);
+    });
   });
 
   listForm.addEventListener("submit", (e) => {

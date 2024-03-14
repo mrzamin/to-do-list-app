@@ -249,6 +249,10 @@ h1 {
 }
 
 /* Modal styles. */
+#task-modal {
+  width: max(300px, 40%);
+  height: max(360px, 40%);
+}
 #task-modal,
 #list-modal {
   position: fixed;
@@ -259,10 +263,12 @@ h1 {
   border-radius: 10px;
   z-index: 20;
   background-color: white;
-  border: 1px solid var(--blue-color);
-  width: max(300px, 40%);
-  height: max(360px, 40%);
-  /* padding: 1rem; */
+  /* border: 1px solid var(--blue-color); */
+}
+
+#list-modal {
+  width: 40%;
+  height: 200px;
 }
 
 #task-modal.active,
@@ -473,7 +479,8 @@ h1 {
   color: white;
 }
 
-.item-form-buttons > button:nth-child(1) {
+.item-form-buttons > button:nth-child(1),
+.edit-list-buttons > button:nth-child(1) {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
@@ -490,7 +497,93 @@ h1 {
   height: 37px;
 }
 
-.item-form-buttons > button:nth-child(2) {
+.item-form-buttons > button:nth-child(2),
+.edit-list-buttons > button:nth-child(2) {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
+
+/* Add list form styles. */
+
+#list-form {
+  width: 100%;
+  height: 100%;
+}
+
+.list-title {
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(16, 185, 129, 1) 0%,
+    rgba(11, 193, 166, 1) 29%,
+    rgba(11, 193, 166, 1) 100%
+  );
+  height: 40%;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+  display: grid;
+  place-items: center;
+}
+
+.list-body {
+  display: flex;
+  flex-direction: column;
+  height: 60%;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.list-body label {
+  color: var(--grey);
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.edit-list-buttons {
+  display: flex;
+}
+.edit-list-buttons > button {
+  width: 250px;
+  height: 35px;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(16, 185, 129, 1) 0%,
+    rgba(11, 193, 166, 1) 29%,
+    rgba(11, 193, 166, 1) 100%
+  );
+  outline: none;
+  border: none;
+  color: white;
+}
+
+.edit-list-buttons > button:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgb(14, 169, 118) 0%,
+    rgb(11, 179, 153) 29%,
+    rgb(10, 174, 149) 100%
+  );
+  height: 36px;
+}
+/* <div class="modal" id="list-modal">
+      <form action="#" id="list-form">
+        <div class="list-title">List Title</div>
+        <div class="list-body">
+          <label>List Name</label>
+          <input type="text" class="list-name-input" />
+          <div class="buttons">
+            <button type="submit">Submit</button>
+            <button class="cancel">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div> */
