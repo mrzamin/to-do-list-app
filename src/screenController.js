@@ -36,6 +36,7 @@ function screenController() {
   saveToLocalStorage(lists, selectedListId);
   selectedListId = getIdFromLocalStorage();
 
+  const sidebarTitle = document.querySelector(".sidebar-title");
   const listContainer = document.querySelector(".list-container");
   const addListForm = document.querySelector(".list-form");
   const addListBtn = document.querySelector(".plus-btn-container");
@@ -54,6 +55,8 @@ function screenController() {
   const taskDescr = document.querySelector(".task-description");
   const taskDate = document.querySelector(".task-date");
   const taskPriority = document.querySelector(".task-priority");
+
+  sidebarTitle.addEventListener("click", renderHomepage);
 
   listInput.addEventListener("mouseout", toggleFormDisplay);
 
@@ -239,16 +242,24 @@ function screenController() {
     closeModal(modal);
   });
 
-  // <main class="main">
-  //   <div class="main-heading">
-  //     <h1 class="list-heading"></h1>
-  //     <div class="add-item-container">
-  //       <h3>Add item</h3>
-  //       <img src="plusBtn.svg" alt="Add item" />
-  //     </div>
-  //   </div>
-  //   <div class="main-content"></div>
-  // </main>;
+  function renderHomepage() {
+    clearTasks();
+
+    const homepageTitle = document.createElement("h1");
+    homepageTitle.innerHTML = "To-Do App";
+    homepageTitle.classList.add("homepage-title");
+    const homepageDescr = document.createElement("p");
+    homepageDescr.innerHTML =
+      "Create a new list by clicking the + button or select an existing one to start adding your tasks.";
+    homepageDescr.classList.add("homepage-descr");
+
+    const homepageContainer = document.createElement("div");
+    homepageContainer.classList.add("homepage-container");
+    homepageContainer.appendChild(homepageTitle);
+    homepageContainer.appendChild(homepageDescr);
+
+    taskContainer.appendChild(homepageContainer);
+  }
 
   function renderHeader(selectedList) {
     const header = document.createElement("div");
@@ -374,6 +385,7 @@ function screenController() {
 
   //Initial render.
   renderLists();
+  renderHomepage();
   console.log(selectedTaskId);
   selectedList = listModule.getList(selectedListId);
   // renderTasks(selectedList);
