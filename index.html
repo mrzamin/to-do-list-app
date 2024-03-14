@@ -41,7 +41,10 @@
 
     <div class="modal" id="task-modal">
       <form id="form" class="task-form" action="#">
-        <div>
+        <legend class="item-form-title">
+          <div>To-Do Item</div>
+        </legend>
+        <div class="item-grid">
           <input
             type="text"
             class="task-title"
@@ -49,8 +52,7 @@
             placeholder="Task Title"
             required
           />
-        </div>
-        <div>
+
           <input
             type="text"
             maxlength="250"
@@ -58,8 +60,7 @@
             name="Description"
             placeholder="Task Description"
           />
-        </div>
-        <div>
+
           <input
             type="date"
             class="task-date"
@@ -73,7 +74,8 @@
             <option value="High">High</option>
           </select>
         </div>
-        <div>
+
+        <div class="item-form-buttons">
           <button class="task-cancel">Cancel</button>
           <button class="submit" type="submit">Add task</button>
         </div>
