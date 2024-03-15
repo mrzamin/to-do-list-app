@@ -2,35 +2,33 @@ import { getFromLocalStorage, saveToLocalStorage } from "./localStorage";
 
 let lists = getFromLocalStorage() || [];
 
-const List = (name, icon) => {
+const List = (name) => {
   let id = Date.now().toString();
   let tasks = [];
   let completed = [];
   return {
     id,
     name,
-    icon,
     tasks,
     completed,
   };
 };
 
-const createList = (name, icon) => {
+const createList = (name) => {
   //If there is already a list with an identical name, add "1"
   if (lists.find((list) => list.name === name)) {
-    const list = List(name + "1", icon);
+    const list = List(name + "1");
     lists.push(list);
   } else {
-    const list = List(name, icon);
+    const list = List(name);
     lists.push(list);
   }
   saveToLocalStorage(lists);
 };
 
-const editListName = (listId, newName, icon) => {
+const editListName = (listId, newName) => {
   const list = getList(listId);
   list.name = newName;
-  list.icon = icon;
   saveToLocalStorage(lists, listId);
 };
 
