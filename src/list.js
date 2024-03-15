@@ -1,20 +1,6 @@
-import { getFromLocalStorage, saveToLocalStorage } from "./screenController";
+import { getFromLocalStorage, saveToLocalStorage } from "./localStorage";
 
 let lists = getFromLocalStorage() || [];
-
-// const updateLists = () => {
-//   if (!getFromLocalStorage) {
-//     console.log("No lists in storage");
-//     createList("My List", "defaultImg");
-//     // saveToLocalStorage(lists);
-//   }
-
-// lists = JSON.parse(localStorage.getItem(localStorageKey));
-// };
-
-// const storeLists = () => {
-//   localStorage.setItem(localStorageKey, JSON.stringify(lists));
-// };
 
 const List = (name, icon) => {
   let id = Date.now().toString();

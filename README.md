@@ -1,1 +1,1 @@
-# to-do-app
+The purpose of this project is to build a to-do list app with HTML, vanilla JavaScript, vanilla CSS, and webpack. JavaScript ES6 modules are used to keep my code organized. The Web Storage API is used to save and fetch the user's to-do list items.

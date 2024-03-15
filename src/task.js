@@ -1,5 +1,5 @@
-import * as listModule from "./list.js";
-import { getFromLocalStorage, saveToLocalStorage } from "./screenController";
+import { lists, getList } from "./list.js";
+import { saveToLocalStorage } from "./localStorage.js";
 
 const Task = (listId, name, description, date, priority) => {
   let id = Date.now().toString();
@@ -16,7 +16,7 @@ const Task = (listId, name, description, date, priority) => {
 };
 
 const createTask = (listId, name, description, date, priority) => {
-  const list = listModule.getList(listId);
+  const list = getList(listId);
   const task = Task(listId, name, description, date, priority);
   list.tasks.push(task);
 };
@@ -38,14 +38,14 @@ const editTask = (
 };
 
 const deleteTask = (listId, taskId) => {
-  const list = listModule.getList(listId);
+  const list = getList(listId);
   const taskIndex = getTaskIndex(listId, taskId);
   list.tasks.splice(taskIndex, 1);
-  saveToLocalStorage(listModule.lists, listId);
+  saveToLocalStorage(lists, listId);
 };
 
 const markComplete = (listId, taskId) => {
-  const list = listModule.getList(list);
+  const list = getList(list);
   const task = getTask(listId, taskId);
   const taskIndex = getTaskIndex(listId, taskId);
   list.completed.unshift(task);
@@ -53,7 +53,7 @@ const markComplete = (listId, taskId) => {
 };
 
 const getTask = (listId, taskId) => {
-  const list = listModule.getList(listId);
+  const list = getList(listId);
   for (const key in list) {
     if (key === "tasks") {
       const task = list[key].find((task) => task.id === taskId);
@@ -63,7 +63,7 @@ const getTask = (listId, taskId) => {
 };
 
 const getTaskIndex = (listId, taskId) => {
-  const list = listModule.getList(listId);
+  const list = getList(listId);
   for (let key in list) {
     if (key === "tasks") {
       const taskIndex = list[key].findIndex((task) => task.id === taskId);

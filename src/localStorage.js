@@ -1,22 +1,19 @@
-// const localStorageKey = "lists";
-// const localStorageIdKey = "listId";
+const localStorageKey = "lists";
+const localStorageIdKey = "listId";
 
-// function saveToLocalStorage(lists, selectedListId) {
-//   localStorage.setItem(localStorageKey, JSON.stringify(lists));
-//   localStorage.setItem(localStorageIdKey, selectedListId);
-// }
+function saveToLocalStorage(lists, selectedListId) {
+  localStorage.setItem(localStorageKey, JSON.stringify(lists));
+  localStorage.setItem(localStorageIdKey, JSON.stringify(selectedListId));
+}
 
-// function getFromLocalStorage() {
-//   const data = localStorage.getItem(localStorageKey)
-//     ? JSON.parse(localStorage.getItem(localStorageKey))
-//     : null;
-//   // return JSON.parse(localStorage.getItem(localStorageKey));
-//   return data;
-// }
+function getFromLocalStorage() {
+  const data = JSON.parse(localStorage.getItem(localStorageKey));
+  return data;
+}
 
-// function getIdFromLocalStorage() {
-//   const selectedListId = localStorage.getItem(localStorageIdKey);
-//   return selectedListId;
-// }
+function getIdFromLocalStorage() {
+  const selectedListId = JSON.parse(localStorage.getItem(localStorageIdKey));
+  return selectedListId;
+}
 
-// export { saveToLocalStorage, getFromLocalStorage, getIdFromLocalStorage };
+export { saveToLocalStorage, getFromLocalStorage, getIdFromLocalStorage };

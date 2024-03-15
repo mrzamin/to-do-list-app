@@ -1,12 +1,10 @@
 const main = document.querySelector(".main");
-const addItemBtn = document.querySelector(".add-item-container");
 
 export function renderHomepage() {
-  addItemBtn.style.visibility = "hidden";
-
   const homepageTitle = document.createElement("h1");
   homepageTitle.innerHTML = "To-Do App";
   homepageTitle.classList.add("homepage-title");
+
   const homepageDescr = document.createElement("p");
   homepageDescr.innerHTML =
     "Create a new list by clicking the + button or select an existing one to start adding your tasks.";

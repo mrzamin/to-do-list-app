@@ -1,34 +1,17 @@
+//Import modules:
+
 import * as listModule from "./list";
 import * as taskModule from "./task";
-// import { saveToLocalStorage, getIdFromLocalStorage } from "./localStorage";
+import { saveToLocalStorage, getIdFromLocalStorage } from "./localStorage";
 
-import addBtn from "./addBtn.svg";
-import editBtn from "./editBtn.svg";
-import deleteBtn from "./deleteBtn.svg";
-import plusBtn from "./plusBtn.svg";
+//Import icons:
 
-const localStorageKey = "lists";
-const localStorageIdKey = "listId";
+import editBtn from "./imgs/editBtn.svg";
+import deleteBtn from "./imgs/deleteBtn.svg";
+import plusBtn from "./imgs/plusBtn.svg";
 
-function saveToLocalStorage(lists, selectedListId) {
-  localStorage.setItem(localStorageKey, JSON.stringify(lists));
-  localStorage.setItem(localStorageIdKey, JSON.stringify(selectedListId));
-}
-
-function getFromLocalStorage() {
-  const data = JSON.parse(localStorage.getItem(localStorageKey));
-  // return JSON.parse(localStorage.getItem(localStorageKey));
-  return data;
-}
-
-function getIdFromLocalStorage() {
-  const selectedListId = JSON.parse(localStorage.getItem(localStorageIdKey));
-  return selectedListId;
-}
-
-let selectedListId = "none";
 let selectedList = "none";
-
+let selectedListId = "none";
 let selectedTaskId = "none";
 
 function screenController() {
@@ -45,12 +28,8 @@ function screenController() {
   const listForm = document.querySelector("#list-form");
   const overlay = document.querySelector("#overlay");
   const cancelBtns = document.querySelectorAll(".cancel");
-  const submitBtn = document.querySelector(".list-submit");
   const taskContainer = document.querySelector(".main-content");
-  // const main = document.querySelector(".main");
-  // const addItemBtn = document.querySelector(".add-item-container");
   const addItemForm = document.querySelector(".task-form");
-  const taskTitleInput = document.querySelector(".task-title");
   const taskName = document.querySelector(".task-title");
   const taskDescr = document.querySelector(".task-description");
   const taskDate = document.querySelector(".task-date");
@@ -106,7 +85,6 @@ function screenController() {
       listName.classList.add("list-name");
       listName.setAttribute("readonly", true);
       listName.dataset.listId = list.id;
-      // console.log(selectedListId);
       if (list.id === selectedListId) {
         listName.classList.add("selected-list");
       }
@@ -136,12 +114,8 @@ function screenController() {
 
       listContainer.appendChild(listElement);
     });
-
-    // const selectedList = listModule.getList(selectedListId);
-    // renderTasks(selectedList);
   };
 
-  //clears list collection from UI.
   const clearLists = () => {
     listContainer.innerHTML = "";
   };
@@ -150,7 +124,6 @@ function screenController() {
     taskContainer.innerHTML = "";
   };
 
-  //Add event listener to add list form.
   addListForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const listName = listInput.value;
@@ -186,6 +159,7 @@ function screenController() {
       selectedList = listModule.getList(selectedListId);
       renderTasks(selectedList);
     }
+
     if (e.target.dataset.btn == "edit") {
       openListModal(selectedListId);
     }
@@ -293,7 +267,24 @@ function screenController() {
     taskContainer.appendChild(header);
   }
 
+  taskContainer.addEventListener("click", selectTaskElement);
+
+  function selectTaskElement(e) {
+    console.log("select task fcn called");
+    if (e.target.tagName.toLowerCase() === "input") {
+      const selectedListId = e.target.dataset.listId;
+      const selectedList = listModule.getList(selectedListId);
+      const selectedTask = selectedList.tasks.find(
+        (task) => task.id === e.target.dataset.id
+      );
+      selectedTask.complete = e.target.checked;
+      saveToLocalStorage(lists, selectedListId);
+      renderTasks(selectedList);
+    }
+  }
+
   function renderTasks(selectedList) {
+    console.log("tasks rendered");
     clearTasks();
 
     renderHeader(selectedList);
@@ -301,7 +292,6 @@ function screenController() {
     selectedList.tasks.forEach((task) => {
       let itemCard = document.createElement("div");
       itemCard.classList.add("item-card");
-      // itemCard.dataset.taskId = task.id;
 
       let priorityIndicator = document.createElement("div");
       priorityIndicator.classList.add("priority-indicator");
@@ -320,6 +310,13 @@ function screenController() {
       checkbox.setAttribute("type", "checkbox");
       checkbox.dataset.taskId = task.id;
       checkbox.classList.add("checkbox");
+      checkbox.dataset.id = task.id;
+      checkbox.dataset.listId = selectedList.id;
+      checkbox.checked = task.complete;
+
+      if (task.complete) {
+        itemCard.classList.add("completed-task");
+      }
 
       let checkboxContainer = document.createElement("div");
       checkboxContainer.classList.add("checkbox-container");
@@ -344,11 +341,10 @@ function screenController() {
       deleteItemBtn.dataset.btn = "delete";
 
       deleteItemBtn.addEventListener("click", (e) => {
-        // let selectedTaskId = task.id;
         selectedTaskId = task.id;
         console.log(selectedTaskId);
         taskModule.deleteTask(selectedListId, selectedTaskId);
-        // renderLists();
+
         renderTasks(selectedList);
       });
 
@@ -386,9 +382,6 @@ function screenController() {
   //Initial render.
   renderLists();
   renderHomepage();
-  console.log(selectedTaskId);
-  selectedList = listModule.getList(selectedListId);
-  // renderTasks(selectedList);
 }
 
-export { screenController, getFromLocalStorage, saveToLocalStorage };
+export { screenController };
