@@ -19,6 +19,7 @@ const createTask = (listId, name, description, date, priority) => {
   const list = getList(listId);
   const task = Task(listId, name, description, date, priority);
   list.tasks.push(task);
+  saveToLocalStorage(lists, listId);
 };
 
 const editTask = (
@@ -35,6 +36,8 @@ const editTask = (
   task.description = newDescription;
   task.date = newDate;
   task.priority = newPriority;
+
+  saveToLocalStorage(lists, listId);
 };
 
 const deleteTask = (listId, taskId) => {
@@ -50,6 +53,7 @@ const markComplete = (listId, taskId) => {
   const taskIndex = getTaskIndex(listId, taskId);
   list.completed.unshift(task);
   list.tasks.splice(taskIndex, 1);
+  saveToLocalStorage(lists, listId);
 };
 
 const getTask = (listId, taskId) => {
