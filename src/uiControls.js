@@ -284,9 +284,7 @@ function screenController() {
   }
 
   function renderTasks(selectedList) {
-    console.log("tasks rendered");
     clearTasks();
-
     renderHeader(selectedList);
 
     selectedList.tasks.forEach((task) => {
