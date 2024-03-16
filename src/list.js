@@ -18,11 +18,10 @@ const createList = (name) => {
   //If there is already a list with an identical name, add "1"
   if (lists.find((list) => list.name === name)) {
     const list = List(name + "1");
-    lists.push(list);
   } else {
     const list = List(name);
-    lists.push(list);
   }
+  lists.push(list);
   saveToLocalStorage(lists);
 };
 

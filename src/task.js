@@ -1,5 +1,5 @@
 import { lists, getList } from "./list.js";
-import { saveToLocalStorage } from "./localStorage.js";
+import { saveToLocalStorage } from "./localStorage";
 
 const Task = (listId, name, description, date, priority) => {
   let id = Date.now().toString();
